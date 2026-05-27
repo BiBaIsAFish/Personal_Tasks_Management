@@ -1,0 +1,59 @@
+{
+  "database_name": "Database for Task List",
+  "data_source": "Database for Task List",
+  "properties": {
+    "Sub-item": {
+      "type": "relation",
+      "set_on_create": false
+    },
+    "完成": {
+      "type": "button",
+      "set_on_create": false
+    },
+    "類別": {
+      "type": "select",
+      "set_on_create": true
+    },
+    "狀態": {
+      "type": "status",
+      "set_on_create": true
+    },
+    "Last edited time": {
+      "type": "last_edited_time",
+      "set_on_create": false
+    },
+    "優先程度": {
+      "type": "select",
+      "set_on_create": true
+    },
+    "Parent item": {
+      "type": "relation",
+      "set_on_create": false
+    },
+    "備註": {
+      "type": "rich_text",
+      "set_on_create": true
+    },
+    "截止日": {
+      "type": "date",
+      "set_on_create": true
+    },
+    "待辦事項": {
+      "type": "title",
+      "set_on_create": true,
+      "required": true
+    }
+  },
+  "create_payload_mapping": {
+    "title": "待辦事項",
+    "due_date": "截止日",
+    "category": "類別",
+    "status": "狀態",
+    "priority": "優先程度",
+    "notes": "備註"
+  },
+  "notes": [
+    "button, relation, and last_edited_time properties are not set by the create helper.",
+    "Integration test only sets title, date, and notes by default to avoid unknown select/status option failures."
+  ]
+}
