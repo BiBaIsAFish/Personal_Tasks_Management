@@ -76,28 +76,44 @@ DISCORD_TOKEN=你的_discord_bot_token
 python run_bot/discord_bot.py
 ```
 
-## 4. 用 systemd 常駐
+## 4. 用 tmux 常駐
 
-複製 service 範本：
+安裝 tmux：
 
 ```bash
-sudo cp run_bot/notion-discord-bot.service.example /etc/systemd/system/notion-discord-bot.service
-sudo systemctl daemon-reload
-sudo systemctl enable --now notion-discord-bot
+sudo apt install -y tmux
 ```
 
-查看執行狀態：
+建立 tmux session：
 
 ```bash
-sudo systemctl status notion-discord-bot
-sudo journalctl -u notion-discord-bot -f
+cd /home/ubuntu/hw4
+tmux new -s discord-bot
 ```
 
-停止或重啟：
+進入 tmux 後啟動 bot：
 
 ```bash
-sudo systemctl stop notion-discord-bot
-sudo systemctl restart notion-discord-bot
+source .venv/bin/activate
+python run_bot/discord_bot.py
+```
+
+常用快捷鍵與指令：
+
+```text
+# 離開 tmux，但讓 bot 繼續執行
+Ctrl+b，放開後按 d
+
+# 回到 bot session
+tmux attach -t discord-bot
+
+# 查看目前 session
+tmux ls
+
+# 停止 bot：回到 session 後按 Ctrl+C
+
+# 關閉 session
+tmux kill-session -t discord-bot
 ```
 
 ## 5. 注意事項

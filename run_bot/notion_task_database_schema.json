@@ -12,11 +12,13 @@
     },
     "類別": {
       "type": "select",
-      "set_on_create": true
+      "set_on_create": true,
+      "options": ["作業", "報告", "meeting", "考試", "專案", "閱讀", "個人", "工作", "生活", "社交", "test"]
     },
     "狀態": {
       "type": "status",
-      "set_on_create": true
+      "set_on_create": true,
+      "options": ["尚未開始", "進行中", "已完成"]
     },
     "Last edited time": {
       "type": "last_edited_time",
@@ -24,7 +26,8 @@
     },
     "優先程度": {
       "type": "select",
-      "set_on_create": true
+      "set_on_create": true,
+      "options": ["不重要不緊急 Low", "不重要緊急 Medium", "重要不緊急 High", "重要緊急 Critical"]
     },
     "Parent item": {
       "type": "relation",
@@ -32,6 +35,10 @@
     },
     "備註": {
       "type": "rich_text",
+      "set_on_create": true
+    },
+    "開始日": {
+      "type": "date",
       "set_on_create": true
     },
     "截止日": {
@@ -46,7 +53,8 @@
   },
   "create_payload_mapping": {
     "title": "待辦事項",
-    "due_date": "截止日",
+    "start_time": "開始日",
+    "end_time": "截止日",
     "category": "類別",
     "status": "狀態",
     "priority": "優先程度",
