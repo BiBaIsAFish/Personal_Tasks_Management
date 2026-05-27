@@ -1,0 +1,13 @@
+[Unit]
+Description=Notion Discord Agent Bot
+After=network-online.target
+
+[Service]
+WorkingDirectory=/home/ubuntu/hw4
+EnvironmentFile=/home/ubuntu/hw4/run_bot/.env
+ExecStart=/home/ubuntu/hw4/.venv/bin/python /home/ubuntu/hw4/run_bot/discord_bot.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
