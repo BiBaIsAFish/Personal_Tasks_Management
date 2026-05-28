@@ -100,6 +100,12 @@ sudo cp run_bot/notion-discord-bot.service.example /etc/systemd/system/notion-di
 sudo systemctl daemon-reload
 ```
 
+**請確認路徑是否相同，如有差異需修改**
+
+```bash
+sudo vim /etc/systemd/system/notion-discord-bot.service
+```
+
 設定開機自動啟動並立即啟動：
 
 ```bash

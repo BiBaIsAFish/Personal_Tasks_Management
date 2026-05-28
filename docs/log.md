@@ -136,3 +136,9 @@
 - 做了什麼：將 `notion_function/tools.py` 的 Notion property constants 改回 schema 對應的 `待辦事項`、`開始日`、`截止日`、`類別`、`優先程度`、`狀態`、`備註`，並新增 regression test 確認欄位名稱不再錯碼。
 - 為什麼：Gemini 已能呼叫 tools，但 Python 端送到 Notion API 的欄位名稱是錯碼，導致查詢與新增都被 Notion ValidationError 拒絕。
 - 下一步：將修正同步到 VM，旋轉已外洩的 Notion token，重啟 bot 後用 Discord 測試查詢與新增行程。
+
+### 2026-05-28 16:30 - Gemini 錯誤處理與 Notion draft store
+
+- 做了什麼：在 `LLM_agent/gemini_controller.py` 加入 Gemini 429 固定回覆與 `GEMINI_SYSTEM_PROMPT`；在 `notion_function/adapter.py` 接上 adapter 層的全域 JSON draft store，新增 `notion_function/task_draft_store.py` 與 `run_bot/task_draft.json` 模板，標明必填與可不填欄位。
+- 為什麼：避免 Gemini quota/rate-limit 時把底層錯誤直接丟給 Discord 使用者，並在新增 Notion task 前後留下可檢查的結構化暫存資料；成功新增後清空 draft，失敗時保留 draft 方便追查。
+- 下一步：視實際使用狀況調整 `GEMINI_MODEL`、`GEMINI_SYSTEM_PROMPT`，並評估是否讓 draft store 支援補欄位或更長期的對話摘要。
