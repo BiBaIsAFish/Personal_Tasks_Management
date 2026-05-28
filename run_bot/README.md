@@ -179,3 +179,17 @@ tmux kill-session -t discord-bot
 - 不要把 `run_bot/.env` commit 到 git。
 - 目前 `notion_agent_bot.notion_tools.MockNotionTools` 還是 mock 工具，尚未串接真正 Notion API。
 - 若 bot 在 server 內沒有回應，確認訊息有提到 bot，且 Developer Portal 已啟用 `Message Content Intent`。
+
+## Gemini + Notion production mode
+
+Set these values in `run_bot/.env`:
+
+```env
+DISCORD_TOKEN=your_discord_bot_token
+GEMINI_API_KEY=your_google_ai_studio_key
+GEMINI_MODEL=gemini-3-flash-preview
+NOTION_TOKEN=your_notion_integration_secret
+NOTION_DATA_SOURCE_ID=your_notion_data_source_id
+```
+
+`GEMINI_MODEL` is optional. If `GEMINI_API_KEY` is not set, the bot uses the local mock controller.
