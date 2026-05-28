@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from datetime import datetime
+from zoneinfo import ZoneInfo
 import os
 from typing import Any
 
@@ -21,7 +23,18 @@ class GeminiAgentController:
         self.client = client
         self.adapter = adapter
         self.model = model
-        self.system_prompt = os.environ.get("GEMINI_SYSTEM_PROMPT", SYSTEM_PROMPT)
+
+        prompt_path = os.environ.get("GEMINI_SYSTEM_PROMPT_PATH")
+        
+        if prompt_path and os.path.exists(prompt_path):
+            with open(prompt_path, "r", encoding="utf-8") as f:
+                self.system_prompt = f.read()
+
+                now = datetime.now(ZoneInfo('Asia/Taipei')).isoformat()
+
+                self.system_prompt = self.system_prompt.replace("{{CURRENT_TIME}}", now)
+        else:
+            self.system_prompt = os.environ.get("GEMINI_SYSTEM_PROMPT", SYSTEM_PROMPT)
 
     @classmethod
     def from_env(cls, adapter: Any) -> "GeminiAgentController":
