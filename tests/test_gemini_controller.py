@@ -1,6 +1,6 @@
 import unittest
 
-from notion_agent_bot.gemini_controller import GeminiAgentController
+from LLM_agent.gemini_controller import GeminiAgentController
 
 
 class FakeFunctionCall:

@@ -2,7 +2,7 @@ import os
 import unittest
 from pathlib import Path
 
-from notion_agent_bot.notion_task_creator import create_notion_task_page
+from LLM_agent.notion_task_creator import create_notion_task_page
 
 
 ROOT_DIR = Path(__file__).resolve().parents[1]

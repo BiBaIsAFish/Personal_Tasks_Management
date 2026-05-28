@@ -1,7 +1,7 @@
 import unittest
 
-from notion_agent_bot.agent_controller import AgentController
-from notion_agent_bot.notion_tools import MockNotionTools
+from LLM_agent.agent_controller import AgentController
+from LLM_agent.notion_tools import MockNotionTools
 
 
 class AgentControllerTest(unittest.TestCase):

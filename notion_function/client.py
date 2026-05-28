@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 from typing import Any
 
-ROOT_DIR = Path(__file__).resolve().parents[2]
+ROOT_DIR = Path(__file__).resolve().parents[1]
 
 
 def create_notion_client_from_env(env_path: str | Path | None = None) -> tuple[Any, str]:

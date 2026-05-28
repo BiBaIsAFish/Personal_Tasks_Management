@@ -1,6 +1,6 @@
 import unittest
 
-from notion_agent_bot.notion_functions.adapter import NotionFunctionAdapter
+from notion_function.adapter import NotionFunctionAdapter
 
 
 class FakeDataSources:

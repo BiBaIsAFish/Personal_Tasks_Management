@@ -1,6 +1,6 @@
 import unittest
 
-from notion_agent_bot.notion_task_creator import create_notion_task_page
+from LLM_agent.notion_task_creator import create_notion_task_page
 
 
 class FakePages:

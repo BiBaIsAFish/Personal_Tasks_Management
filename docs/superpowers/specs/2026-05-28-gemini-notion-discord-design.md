@@ -10,7 +10,7 @@ When a user mentions the Discord bot, the bot sends the remaining message to Gem
 
 The existing `run_bot/discord_bot.py` stays as the Discord adapter. It should strip the bot mention, pass text to an agent controller, and send the returned message.
 
-Add `notion_agent_bot/gemini_controller.py` as the production controller. It will:
+Add `LLM_agent/gemini_controller.py` as the production controller. It will:
 
 - Load Gemini configuration from environment variables.
 - Build a Gemini client.
@@ -19,7 +19,7 @@ Add `notion_agent_bot/gemini_controller.py` as the production controller. It wil
 - Run the tool-call loop until Gemini returns a final text response.
 - Return `AgentResponse` with status, message, and recorded tool calls.
 
-Add `notion_agent_bot/notion_functions/adapter.py` as the guardrail layer. It will wrap the existing Notion functions and bind the Notion client plus data source ID. Gemini will never receive direct access to the raw Notion client.
+Add `notion_function/adapter.py` as the guardrail layer. It will wrap the existing Notion functions and bind the Notion client plus data source ID. Gemini will never receive direct access to the raw Notion client.
 
 `AgentController(MockNotionTools())` remains available as the fallback and test-friendly mock path.
 

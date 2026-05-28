@@ -2,7 +2,7 @@
 
 這個資料夾放 Discord bot 執行所需檔案：
 
-- `discord_bot.py`: Discord 訊息 adapter，會呼叫 `notion_agent_bot.AgentController`
+- `discord_bot.py`: Discord 訊息 adapter，會呼叫 `LLM_agent.AgentController`
 - `requirements.txt`: Python 依賴
 - `.env.example`: 環境變數範例
 - `notion-discord-bot.service.example`: Oracle VM 上的 systemd 範本
@@ -177,7 +177,7 @@ tmux kill-session -t discord-bot
 
 - Discord bot 是主動連到 Discord Gateway，通常 Oracle VM 不需要開 inbound port。
 - 不要把 `run_bot/.env` commit 到 git。
-- 目前 `notion_agent_bot.notion_tools.MockNotionTools` 還是 mock 工具，尚未串接真正 Notion API。
+- 目前 `LLM_agent.notion_tools.MockNotionTools` 還是 mock 工具，尚未串接真正 Notion API。
 - 若 bot 在 server 內沒有回應，確認訊息有提到 bot，且 Developer Portal 已啟用 `Message Content Intent`。
 
 ## Gemini + Notion production mode

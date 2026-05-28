@@ -37,7 +37,7 @@ sys.modules.setdefault("discord", fake_discord)
 sys.modules.setdefault("dotenv", fake_dotenv)
 
 import run_bot.discord_bot as discord_bot
-from notion_agent_bot.agent_controller import AgentController
+from LLM_agent.agent_controller import AgentController
 
 
 class DiscordBotConfigTest(unittest.TestCase):

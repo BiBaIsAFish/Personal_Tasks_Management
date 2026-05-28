@@ -53,7 +53,7 @@ For scheduling requests, call tools in this order:
 Returns a Notion client and data source ID.
 
 ```python
-from notion_agent_bot.notion_functions import create_notion_client_from_env
+from notion_function import create_notion_client_from_env
 
 notion, data_source_id = create_notion_client_from_env()
 ```

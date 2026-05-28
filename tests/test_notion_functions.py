@@ -1,6 +1,6 @@
 import unittest
 
-from notion_agent_bot.notion_functions.tools import (
+from notion_function.tools import (
     CATEGORY_PROP,
     END_PROP,
     NOTES_PROP,

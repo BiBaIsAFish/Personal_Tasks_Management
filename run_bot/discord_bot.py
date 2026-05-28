@@ -10,11 +10,11 @@ from dotenv import load_dotenv
 ROOT_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT_DIR))
 
-from notion_agent_bot.agent_controller import AgentController  # noqa: E402
-from notion_agent_bot.gemini_controller import GeminiAgentController  # noqa: E402
-from notion_agent_bot.notion_functions import create_notion_client_from_env  # noqa: E402
-from notion_agent_bot.notion_functions.adapter import NotionFunctionAdapter  # noqa: E402
-from notion_agent_bot.notion_tools import MockNotionTools  # noqa: E402
+from LLM_agent.agent_controller import AgentController  # noqa: E402
+from LLM_agent.gemini_controller import GeminiAgentController  # noqa: E402
+from notion_function import create_notion_client_from_env  # noqa: E402
+from notion_function.adapter import NotionFunctionAdapter  # noqa: E402
+from LLM_agent.notion_tools import MockNotionTools  # noqa: E402
 
 
 load_dotenv(ROOT_DIR / "run_bot" / ".env")
