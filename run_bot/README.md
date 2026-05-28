@@ -76,7 +76,64 @@ DISCORD_TOKEN=你的_discord_bot_token
 python run_bot/discord_bot.py
 ```
 
-## 4. 用 tmux 常駐
+## 4. 常駐執行
+
+### 4-1. 用 systemd 常駐
+
+systemd 適合正式部署，VM 開機後會自動啟動 bot。
+
+如果之前已經用 tmux 跑 bot，先停止舊 session，避免兩個 bot 同時登入：
+
+```bash
+tmux attach -t discord-bot
+# 進入 session 後按 Ctrl+C 停止 bot
+tmux kill-session -t discord-bot
+```
+
+確認 `run_bot/notion-discord-bot.service.example` 裡的路徑符合 VM 實際位置。以下範例假設專案在 `/home/ubuntu/hw4`。
+
+安裝 service：
+
+```bash
+cd /home/ubuntu/hw4
+sudo cp run_bot/notion-discord-bot.service.example /etc/systemd/system/notion-discord-bot.service
+sudo systemctl daemon-reload
+```
+
+設定開機自動啟動並立即啟動：
+
+```bash
+sudo systemctl enable notion-discord-bot
+sudo systemctl start notion-discord-bot
+```
+
+查看狀態：
+
+```bash
+sudo systemctl status notion-discord-bot
+```
+
+查看 log：
+
+```bash
+journalctl -u notion-discord-bot -f
+```
+
+更新程式或 `.env` 後重啟：
+
+```bash
+sudo systemctl restart notion-discord-bot
+```
+
+停止 bot：
+
+```bash
+sudo systemctl stop notion-discord-bot
+```
+
+### 4-2. 用 tmux 常駐
+
+tmux 適合臨時測試或手動維護；VM 重開機後不會自動恢復 bot。
 
 安裝 tmux：
 
