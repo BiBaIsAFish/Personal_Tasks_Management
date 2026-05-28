@@ -95,6 +95,25 @@ class GeminiAgentControllerTest(unittest.TestCase):
         self.assertEqual(response.status, "error")
         self.assertIn("api unavailable", response.message)
 
+    def test_returns_fixed_message_for_rate_limit_error(self):
+        class RateLimitError(Exception):
+            status_code = 429
+
+        class RateLimitedModels:
+            def generate_content(self, **kwargs):
+                raise RateLimitError("quota exceeded")
+
+        class RateLimitedClient:
+            def __init__(self):
+                self.models = RateLimitedModels()
+
+        controller = GeminiAgentController(client=RateLimitedClient(), adapter=FakeAdapter(), model="fake-model")
+
+        response = controller.handle_message("please create a task")
+
+        self.assertEqual(response.status, "error")
+        self.assertEqual(response.message, "Gemini API quota exceeded. Please try again later.")
+
 
 if __name__ == "__main__":
     unittest.main()

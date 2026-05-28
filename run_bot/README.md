@@ -188,8 +188,9 @@ Set these values in `run_bot/.env`:
 DISCORD_TOKEN=your_discord_bot_token
 GEMINI_API_KEY=your_google_ai_studio_key
 GEMINI_MODEL=gemini-3-flash-preview
+GEMINI_SYSTEM_PROMPT=You are a concise Notion scheduling assistant.
 NOTION_TOKEN=your_notion_integration_secret
 NOTION_DATA_SOURCE_ID=your_notion_data_source_id
 ```
 
-`GEMINI_MODEL` is optional. If `GEMINI_API_KEY` is not set, the bot uses the local mock controller.
+`GEMINI_MODEL` and `GEMINI_SYSTEM_PROMPT` are optional. If `GEMINI_API_KEY` is not set, the bot uses the local mock controller.

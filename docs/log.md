@@ -130,3 +130,9 @@
 - ?????? implementation plan ?? Notion function adapter?Gemini function-calling controller?Discord controller selection?`google-genai` dependency ? production `.env` ?????? focused/full unittest?
 - ????? Discord bot ? `GEMINI_API_KEY` ????? Gemini + Notion guarded tools????? mock controller fallback?
 - ????? VM ? `run_bot/.env` ?? `GEMINI_API_KEY`?`NOTION_TOKEN`?`NOTION_DATA_SOURCE_ID`???? Discord/Notion smoke test?
+
+### 2026-05-28 15:27 - 修正 Notion 欄位錯碼
+
+- 做了什麼：將 `notion_function/tools.py` 的 Notion property constants 改回 schema 對應的 `待辦事項`、`開始日`、`截止日`、`類別`、`優先程度`、`狀態`、`備註`，並新增 regression test 確認欄位名稱不再錯碼。
+- 為什麼：Gemini 已能呼叫 tools，但 Python 端送到 Notion API 的欄位名稱是錯碼，導致查詢與新增都被 Notion ValidationError 拒絕。
+- 下一步：將修正同步到 VM，旋轉已外洩的 Notion token，重啟 bot 後用 Discord 測試查詢與新增行程。

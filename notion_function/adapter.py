@@ -4,12 +4,14 @@ from collections.abc import Callable
 from typing import Any
 
 from . import tools
+from .task_draft_store import JsonTaskDraftStore
 
 
 class NotionFunctionAdapter:
-    def __init__(self, notion: Any, data_source_id: str) -> None:
+    def __init__(self, notion: Any, data_source_id: str, task_draft_store: JsonTaskDraftStore | None = None) -> None:
         self.notion = notion
         self.data_source_id = data_source_id
+        self.task_draft_store = task_draft_store or JsonTaskDraftStore()
         self.tool_calls: list[dict[str, Any]] = []
         self._tools: dict[str, tuple[Callable[..., dict[str, Any]], set[str]]] = {
             "get_current_time": (self._get_current_time, set()),
@@ -46,7 +48,11 @@ class NotionFunctionAdapter:
                 return result
 
         try:
+            if name == "create_notion_task":
+                self.task_draft_store.save_draft(args)
             result = function(**args)
+            if name == "create_notion_task" and result.get("status") == "created":
+                self.task_draft_store.clear_draft()
         except Exception as exc:
             result = {"status": "error", "error": "tool_error", "message": str(exc)}
 

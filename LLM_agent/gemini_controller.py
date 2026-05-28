@@ -13,6 +13,7 @@ Return concise, user-facing responses.
 Do not invent Notion task IDs or select/status/priority values.
 If a tool returns an error, explain what is missing or what failed.
 """.strip()
+RATE_LIMIT_MESSAGE = "Gemini API quota exceeded. Please try again later."
 
 
 class GeminiAgentController:
@@ -20,6 +21,7 @@ class GeminiAgentController:
         self.client = client
         self.adapter = adapter
         self.model = model
+        self.system_prompt = os.environ.get("GEMINI_SYSTEM_PROMPT", SYSTEM_PROMPT)
 
     @classmethod
     def from_env(cls, adapter: Any) -> "GeminiAgentController":
@@ -59,6 +61,12 @@ class GeminiAgentController:
                 tool_calls=list(self.adapter.tool_calls),
             )
         except Exception as exc:
+            if self._is_rate_limit_error(exc):
+                return AgentResponse(
+                    status="error",
+                    message=RATE_LIMIT_MESSAGE,
+                    tool_calls=list(self.adapter.tool_calls),
+                )
             return AgentResponse(
                 status="error",
                 message=f"Gemini controller error: {exc}",
@@ -67,9 +75,12 @@ class GeminiAgentController:
 
     def _config(self) -> dict[str, Any]:
         return {
-            "system_instruction": SYSTEM_PROMPT,
+            "system_instruction": self.system_prompt,
             "tools": [{"function_declarations": self._function_declarations()}],
         }
+
+    def _is_rate_limit_error(self, exc: Exception) -> bool:
+        return getattr(exc, "status_code", None) == 429 or getattr(exc, "code", None) == 429
 
     def _function_declarations(self) -> list[dict[str, Any]]:
         return [

@@ -1,0 +1,25 @@
+{
+  "_comment": "Runtime draft for the next Notion task. Keep this file as valid JSON; comments are stored in _comment fields.",
+  "required_fields": [
+    "title",
+    "start_time",
+    "end_time"
+  ],
+  "optional_fields": [
+    "tags",
+    "priority",
+    "status",
+    "notes"
+  ],
+  "template": {
+    "_comment": "Fill required fields before creating a Notion task. Optional fields may stay empty.",
+    "title": "",
+    "start_time": "",
+    "end_time": "",
+    "tags": [],
+    "priority": "",
+    "status": "",
+    "notes": ""
+  },
+  "draft": null
+}
