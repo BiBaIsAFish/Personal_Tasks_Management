@@ -57,7 +57,7 @@ async def on_message(message: discord.Message) -> None:
     text = text.strip()
 
     if not text:
-        await message.channel.send("請輸入要新增的行程內容。")
+        await message.channel.send("請輸入要我處理的內容。")
         return
 
     response = agent.handle_message(text)

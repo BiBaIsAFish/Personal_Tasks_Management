@@ -59,6 +59,15 @@ class FakeNotion:
 
 
 class NotionFunctionsTest(unittest.TestCase):
+    def test_property_names_match_task_database_schema(self):
+        self.assertEqual(TITLE_PROP, "待辦事項")
+        self.assertEqual(START_PROP, "開始日")
+        self.assertEqual(END_PROP, "截止日")
+        self.assertEqual(CATEGORY_PROP, "類別")
+        self.assertEqual(PRIORITY_PROP, "優先程度")
+        self.assertEqual(STATUS_PROP, "狀態")
+        self.assertEqual(NOTES_PROP, "備註")
+
     def test_create_notion_task_writes_start_end_and_optional_fields(self):
         notion = FakeNotion()
 

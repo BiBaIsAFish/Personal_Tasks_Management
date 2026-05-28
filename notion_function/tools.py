@@ -5,13 +5,13 @@ from typing import Any
 from zoneinfo import ZoneInfo
 
 
-TITLE_PROP = "敺齒鈭?"
-START_PROP = "????"
-END_PROP = "?芣迫??"
-CATEGORY_PROP = "憿"
-PRIORITY_PROP = "?芸?蝔漲"
-STATUS_PROP = "???"
-NOTES_PROP = "?酉"
+TITLE_PROP = "待辦事項"
+START_PROP = "開始日"
+END_PROP = "截止日"
+CATEGORY_PROP = "類別"
+PRIORITY_PROP = "優先程度"
+STATUS_PROP = "狀態"
+NOTES_PROP = "備註"
 
 
 def get_current_time(timezone_name: str = "Asia/Taipei") -> dict[str, str]:
