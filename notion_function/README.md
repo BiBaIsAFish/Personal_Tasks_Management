@@ -1,220 +1,96 @@
-# Notion Functions
+# notion_function
 
-This package exposes Notion task tools for the future LLM controller.
+Notion task tools for the bot / LLM controller.  
+此模組負責連接 Notion database/data source，並提供任務查詢、建立、更新與刪除功能。
+
+## Files
+
+| File | Purpose |
+| --- | --- |
+| `client.py` | 從 `run_bot/.env` 建立 Notion client |
+| `tools.py` | Notion task CRUD / query functions |
+| `adapter.py` | 將 functions 包成 LLM tool-call adapter |
+| `task_draft_store.py` | 暫存 create task draft 到 `run_bot/task_draft.json` |
+| `__init__.py` | 對外匯出常用 functions |
 
 ## Environment
 
-Set these values in `run_bot/.env`:
+在 `run_bot/.env` 設定：
 
 ```env
 NOTION_TOKEN=secret_xxx
 NOTION_DATA_SOURCE_ID=your_data_source_id
 ```
 
-`NOTION_DATABASE_ID` is accepted as a fallback. When only the database ID is set,
-the helper retrieves the database and uses its first data source ID.
+也可只提供 `NOTION_DATABASE_ID`；程式會讀取 database 的第一個 data source。
 
-## Database Schema
-
-The functions expect this Notion data source schema:
-
-| Field | Type | Purpose |
-| --- | --- | --- |
-| `待辦事項` | title | Task title |
-| `開始日` | date | Task start time |
-| `截止日` | date | Task end time |
-| `類別` | select | First tag/category |
-| `優先程度` | select | Optional priority |
-| `狀態` | status | Optional status |
-| `備註` | rich_text | Optional notes |
-
-Current tested options:
-
-| Field | Options |
-| --- | --- |
-| `類別` | `作業`, `報告`, `meeting`, `考試`, `專案`, `閱讀`, `個人`, `工作`, `生活`, `社交`, `test` |
-| `優先程度` | `不重要不緊急 Low`, `不重要緊急 Medium`, `重要不緊急 High`, `重要緊急 Critical` |
-| `狀態` | `尚未開始`, `進行中`, `已完成` |
-
-## Tool Order
-
-For scheduling requests, call tools in this order:
-
-1. `get_current_time()`
-2. Parse the user's natural language time into `start_time` and `end_time`.
-3. `query_notion_schedule(start_time, end_time)`
-4. If `conflicts` is empty, call `create_notion_task(...)`.
-5. If `conflicts` is not empty, ask the user before creating or updating.
-
-## Functions
-
-### `create_notion_client_from_env()`
-
-Returns a Notion client and data source ID.
+## Basic Usage
 
 ```python
-from notion_function import create_notion_client_from_env
+from notion_function import create_notion_client_from_env, query_notion_tasks
 
 notion, data_source_id = create_notion_client_from_env()
+
+result = query_notion_tasks(
+    notion,
+    data_source_id,
+    start_time="2026-05-28T00:00:00+08:00",
+    end_time="2026-05-29T00:00:00+08:00",
+)
 ```
 
-### `get_current_time(timezone_name="Asia/Taipei")`
+## Main Functions
 
-Output:
+| Function | Description |
+| --- | --- |
+| `get_current_time()` | 回傳目前時間，預設 timezone 為 `Asia/Taipei` |
+| `query_notion_schedule()` | 查詢指定時間區間是否有衝突任務 |
+| `query_notion_tasks_by_date()` | 查詢某一天的任務 |
+| `query_notion_tasks()` | 依時間、分類、優先度、狀態、關鍵字查詢 |
+| `get_notion_task()` | 用 `task_id` 取得單一任務 |
+| `create_notion_task()` | 建立 Notion task |
+| `update_notion_task()` | 更新任務欄位 |
+| `delete_notion_task()` | 封存 Notion page，作為 delete |
 
-```json
-{
-  "timezone": "Asia/Taipei",
-  "current_time": "2026-05-27T11:30:00+08:00"
-}
+## Adapter Tools
+
+`NotionFunctionAdapter` 提供以下 tool names：
+
+```text
+get_current_time
+query_notion_schedule
+get_notion_task
+query_notion_tasks_by_date
+query_notion_tasks
+create_notion_task
+update_notion_task
+delete_notion_task
 ```
-
-### `query_notion_schedule(notion, data_source_id, start_time, end_time)`
-
-Searches by start/end time overlap. Use this before creating or moving a task.
-
-Input:
-
-```json
-{
-  "start_time": "2026-05-28T15:00:00+08:00",
-  "end_time": "2026-05-28T16:00:00+08:00"
-}
-```
-
-Output:
-
-```json
-{
-  "conflicts": [
-    {
-      "task_id": "page_id",
-      "title": "Project Meeting",
-      "start_time": "2026-05-28T15:30:00+08:00",
-      "end_time": "2026-05-28T16:30:00+08:00",
-      "tags": ["work"]
-    }
-  ]
-}
-```
-
-### `get_notion_task(notion, task_id)`
-
-Searches by event ID.
-
-Output:
-
-```json
-{
-  "task": {
-    "task_id": "page_id",
-    "title": "Project Meeting",
-    "start_time": "2026-05-28T15:00:00+08:00",
-    "end_time": "2026-05-28T16:00:00+08:00",
-    "tags": ["meeting"],
-    "priority": "重要緊急 Critical",
-    "status": "進行中",
-    "notes": "Discuss milestones."
-  }
-}
-```
-
-### `query_notion_tasks_by_date(notion, data_source_id, date)`
-
-Searches tasks overlapping one local date in `Asia/Taipei`.
-
-Input:
-
-```json
-{
-  "date": "2026-05-28"
-}
-```
-
-### `query_notion_tasks(notion, data_source_id, start_time=None, end_time=None, category=None, priority=None, status=None, keyword=None)`
-
-Searches by one or more filters. Multiple filters are combined with AND.
-
-Supported filters:
-
-| Argument | Notion field | Match |
-| --- | --- | --- |
-| `start_time` + `end_time` | `開始日`, `截止日` | overlapping time range |
-| `category` | `類別` | select equals |
-| `priority` | `優先程度` | select equals |
-| `status` | `狀態` | status equals |
-| `keyword` | `待辦事項` | title contains |
 
 Example:
 
-```json
-{
-  "start_time": "2026-05-28T00:00:00+08:00",
-  "end_time": "2026-05-29T00:00:00+08:00",
-  "category": "作業",
-  "priority": "重要緊急 Critical",
-  "status": "進行中",
-  "keyword": "DRL"
-}
-```
+```python
+from notion_function.adapter import NotionFunctionAdapter
+from notion_function import create_notion_client_from_env
 
-### `create_notion_task(notion, data_source_id, title, start_time, end_time, tags=None, priority=None, status=None, notes=None)`
+notion, data_source_id = create_notion_client_from_env()
+adapter = NotionFunctionAdapter(notion, data_source_id)
 
-Creates a Notion page. `tags[0]` is written to `類別`. `priority` is written
-to `優先程度`. `status` is written to `狀態`.
-
-Output:
-
-```json
-{
-  "status": "created",
-  "task_id": "page_id",
-  "task": {
-    "task_id": "page_id",
-    "title": "Project Meeting",
+result = adapter.call_tool("create_notion_task", {
+    "title": "DRL homework",
     "start_time": "2026-05-28T15:00:00+08:00",
     "end_time": "2026-05-28T16:00:00+08:00",
-    "tags": ["work"]
-  }
-}
+    "tags": ["test"],
+    "priority": "High",
+    "status": "Todo",
+    "notes": "Created by bot",
+})
 ```
 
-### `update_notion_task(notion, task_id, title=None, new_start_time=None, new_end_time=None, tags=None, priority=None, status=None, notes=None)`
+## Notes
 
-Updates any provided fields on an existing Notion page. Omitted fields are not
-changed. Pass an empty `tags` list, empty `priority`, empty `status`, or empty
-`notes` to clear that field.
-
-Output:
-
-```json
-{
-  "status": "updated",
-  "task_id": "page_id"
-}
-```
-
-### `delete_notion_task(notion, task_id)`
-
-Archives an existing Notion page. Notion pages are archived instead of hard
-deleted.
-
-Output:
-
-```json
-{
-  "status": "deleted",
-  "task_id": "page_id"
-}
-```
-
-## LLM Rules
-
-- Do not create a task until the user intent and time range are clear.
-- Choose exactly one existing `類別`; do not invent new category names.
-- Always query conflicts before creating a task.
-- Before changing a task time, query the target range for conflicts.
-- If conflicts exist, summarize the conflicting task names and ask for confirmation.
-- To delete a task, call `delete_notion_task`; this archives the Notion page.
-- Use ISO 8601 timestamps with timezone offsets.
-- Use `task_id` from query results when updating an existing task.
+- 時間格式使用 ISO 8601 with timezone，例如 `2026-05-28T15:00:00+08:00`。
+- 建立或移動任務前，建議先用 `query_notion_schedule()` 檢查 conflict。
+- `tags` 目前只會使用第一個值寫入 Notion select field。
+- Notion property names 定義在 `tools.py` 的 constants，需與實際 database schema 一致。
+- `delete_notion_task()` 不會 hard delete，只會 archive page。

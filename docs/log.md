@@ -142,3 +142,21 @@
 - 做了什麼：在 `LLM_agent/gemini_controller.py` 加入 Gemini 429 固定回覆與 `GEMINI_SYSTEM_PROMPT`；在 `notion_function/adapter.py` 接上 adapter 層的全域 JSON draft store，新增 `notion_function/task_draft_store.py` 與 `run_bot/task_draft.json` 模板，標明必填與可不填欄位。
 - 為什麼：避免 Gemini quota/rate-limit 時把底層錯誤直接丟給 Discord 使用者，並在新增 Notion task 前後留下可檢查的結構化暫存資料；成功新增後清空 draft，失敗時保留 draft 方便追查。
 - 下一步：視實際使用狀況調整 `GEMINI_MODEL`、`GEMINI_SYSTEM_PROMPT`，並評估是否讓 draft store 支援補欄位或更長期的對話摘要。
+
+### 2026-05-29 11:15 - 補齊資料夾 README
+
+- 做了什麼：先前 session 已在主要資料夾補上 `README.md`，說明各資料夾用途、執行方式或後續協作入口。
+- 為什麼：讓 `LLM_agent/`、`notion_function/`、`run_bot/` 等模組的責任邊界更清楚，也方便後續從文件理解整個 HW4 專案結構。
+- 下一步：若新增資料夾或改變模組責任，需同步更新對應 `README.md`。
+
+### 2026-05-29 11:15 - 調整 plan.md 文件定位
+
+- 做了什麼：小幅修改 `docs/plan.md`，補上本文件是和 Codex 討論用草稿，後續延伸到 Gemini/Discord/Notion design spec，再拆成 implementation plan 的脈絡。
+- 為什麼：讓 project 看起來是從初始 HW4 設計草稿，逐步收斂到 `docs/superpowers/specs/2026-05-28-gemini-notion-discord-design.md` 與 `docs/superpowers/plans/2026-05-28-gemini-notion-discord.md`。
+- 下一步：後續若 spec 或 implementation plan 再變動，回頭確認 `plan.md` 是否仍能作為合理的前導草稿。
+
+### 2026-05-29 11:15 - 合併最終中文 report
+
+- 做了什麼：將 `docs/infographic.md` 的 Mermaid 架構圖與 workflow 圖、`docs/evaluation_cases.md` 的 metrics 與測試案例，整合進 `docs/report.md`，並將 report 改成中文正式繳交版。
+- 為什麼：HW4 要求書面報告、infographic 與 evaluation 方法；合併後的 `report.md` 可作為最終繳交主文件，同時保留個人用 MVP 是 design validation 而非 production product 的定位。
+- 下一步：繳交前再次檢查 `docs/report.md` 是否符合 2-5 頁限制，並確認 `docs/log.md` 已涵蓋主要設計迭代。

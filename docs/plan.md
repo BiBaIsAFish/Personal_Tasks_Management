@@ -6,6 +6,8 @@
 
 需要調整的是範圍：本作業評分重點是「系統設計、工具編排、workflow、evaluation、infographic、log」，不是完成可上線產品。因此本計畫以可交付的設計文件與單人私有 Discord Bot 原型為主，避免把時間花在多人部署、權限管理與長期維運等低評分比重但高風險的工程細節。
 
+本文件先作為和 Codex 討論方向的草稿：先確定 Notion 智慧排程代理的作業範圍、工具邊界與評估方式。後續若要往可執行原型推進，會再把這裡的概念整理成更明確的設計規格。
+
 ## 題目定位
 
 **應用場景：** 個人或團隊的智慧排程助理。
@@ -206,18 +208,25 @@ Notion Database
 
 本專案可實作單人使用的 Discord Bot 原型：使用者在自己的私人 Discord server 中邀請 bot，所有訊息都視為同一位使用者的個人排程需求。
 
-建議 prototype 檔案：
+原始草稿可先用 mock controller 驗證 workflow；若後續要接近實際可用版本，則可把本文件的架構延伸成三層：Discord adapter、LLM/Gemini controller、Notion function layer。這個方向已可對應到後續 design spec 與 implementation plan。
+
+建議 prototype 檔案可從下列概念開始，實作時再對應到 repo 內實際資料夾：
 
 ```text
-notion-agent-bot/
-├── main.py
-├── agent_controller.py
-├── notion_tools.py
-├── schemas.py
-├── prompts.py
+LLM_agent/
+├── agent_controller.py        # mock / test-friendly orchestration
+└── gemini_controller.py       # production function-calling controller
+run_bot/
+├── discord_bot.py             # Discord adapter
+└── README.md
+notion_function/
+├── tools.py                   # Notion CRUD/search helpers
+└── adapter.py                 # guarded tool facade for LLM calls
+docs/
+├── report.md
+├── infographic.md
 ├── evaluation_cases.md
-├── log.md
-└── report.md
+└── log.md
 ```
 
 最低可行原型：
